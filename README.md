@@ -4,21 +4,26 @@ This project implements a **traffic light controller** in Verilog, simulating a 
 
 ---
 
+![image](https://github.com/user-attachments/assets/22b67d8a-2496-452f-97d7-29e328cdaad8)
+
+
 ## 📦 Module Overview
 
 The system is composed of four main modules:
+![image](https://github.com/user-attachments/assets/973ac5c3-eb01-422d-bff7-e7d481a996d0)
 
 ### 1. `Clock Divider`
 - **Function**: Divides the input 10MHz clock down to 1Hz for human-perceivable timing.
 - **Input**: `clk` (10MHz)
 - **Output**: `clk_1Hz`
-
+![image](https://github.com/user-attachments/assets/9c697f09-e145-496e-a534-905a16bb2daa)
 ### 2. `State Machine`
 - **Function**: Controls the light states (red, yellow, green) based on a timed sequence.
 - **States and Durations**:
   - 🔴 Red: 18 seconds
   - 🟡 Yellow: 3 seconds
   - 🟢 Green: 15 seconds
+![image](https://github.com/user-attachments/assets/bcb517ee-683f-4660-96a1-426c0e1d0046)
 - **Inputs**: `clk_1Hz`, `rst_n`, `en`
 - **Outputs**:
   - `red_light`
