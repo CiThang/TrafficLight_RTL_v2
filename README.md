@@ -16,6 +16,7 @@ The system is composed of four main modules:
 - **Function**: Divides the input 10MHz clock down to 1Hz for human-perceivable timing.
 - **Input**: `clk` (10MHz)
 - **Output**: `clk_1Hz`
+- **Result**
 ![image](https://github.com/user-attachments/assets/9c697f09-e145-496e-a534-905a16bb2daa)
 ### 2. `State Machine`
 - **Function**: Controls the light states (red, yellow, green) based on a timed sequence.
@@ -23,14 +24,14 @@ The system is composed of four main modules:
   - 🔴 Red: 18 seconds
   - 🟡 Yellow: 3 seconds
   - 🟢 Green: 15 seconds
-![image](https://github.com/user-attachments/assets/bcb517ee-683f-4660-96a1-426c0e1d0046)
 - **Inputs**: `clk_1Hz`, `rst_n`, `en`
 - **Outputs**:
   - `red_light`
   - `yellow_light`
   - `green_light`
   - `timer_value` (passed to counter)
-
+- **Result**
+![image](https://github.com/user-attachments/assets/bcb517ee-683f-4660-96a1-426c0e1d0046)
 ### 3. `Counter`
 - **Function**: Countdown timer from the `timer_value` received from the state machine.
 - **Input**: `clk_1Hz`, `timer_value`
