@@ -17,7 +17,7 @@ The system is composed of four main modules:
 - **Output**: `clk_1Hz`
 - **Result**
 ![image](https://github.com/user-attachments/assets/9c697f09-e145-496e-a534-905a16bb2daa)
-### 2. `State Machine`
+### 2. `State Machine - traffic_fsm_single.v`
 - **Function**: Controls the light states (red, yellow, green) based on a timed sequence.
 - **States and Durations**:
   - 🔴 Red: 18 seconds
