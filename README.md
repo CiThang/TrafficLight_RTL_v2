@@ -10,7 +10,6 @@ This project implements a **traffic light controller** in Verilog, simulating a 
 ## 📦 Module Overview
 
 The system is composed of four main modules:
-![image](https://github.com/user-attachments/assets/973ac5c3-eb01-422d-bff7-e7d481a996d0)
 
 ### 1. `Clock Divider`
 - **Function**: Divides the input 10MHz clock down to 1Hz for human-perceivable timing.
@@ -88,7 +87,7 @@ The system is composed of four main modules:
 
 ## 📷 Block Diagram
 
-![Traffic Light Controller Block Diagram](<insert image path or leave blank>)
+![image](https://github.com/user-attachments/assets/973ac5c3-eb01-422d-bff7-e7d481a996d0)
 
 ---
 
