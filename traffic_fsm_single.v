@@ -1,7 +1,7 @@
 module traffic_fsm_single(
     input clk,
     input rst_n,
-    output reg [1:0] led // 00: Red, 01: Green, 10: Yellow
+    output reg [1:0] led, // 00: Red, 01: Green, 10: Yellow
     output reg [5:0] timer_value 
 );
 
