@@ -96,3 +96,4 @@ The system is composed of four main modules:
 - Support for night mode or flashing yellow.
 - Implement testbench and simulation scripts.
 
+# TrafficLight_RTL_v2
