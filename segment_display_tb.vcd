@@ -1,0 +1,135 @@
+$date
+	Fri Jun 13 09:37:26 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module segment_display_tb $end
+$var wire 7 ! seg_b [6:0] $end
+$var wire 7 " seg_a [6:0] $end
+$var reg 6 # count_value [5:0] $end
+$scope module uut $end
+$var wire 6 $ count_value [5:0] $end
+$var wire 7 % seg_b [6:0] $end
+$var wire 7 & seg_a [6:0] $end
+$var wire 4 ' digit_b [3:0] $end
+$var wire 4 ( digit_a [3:0] $end
+$scope module dis_a $end
+$var wire 4 ) value [3:0] $end
+$var reg 7 * seg [6:0] $end
+$upscope $end
+$scope module dis_b $end
+$var wire 4 + value [3:0] $end
+$var reg 7 , seg [6:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+b1111110 ,
+b0 +
+b1111110 *
+b0 )
+b0 (
+b0 '
+b1111110 &
+b1111110 %
+b0 $
+b0 #
+b1111110 "
+b1111110 !
+$end
+#10000
+b110000 "
+b110000 &
+b110000 *
+b1111111 !
+b1111111 %
+b1111111 ,
+b1 (
+b1 )
+b1000 '
+b1000 +
+b10010 #
+b10010 $
+#20000
+b1011011 !
+b1011011 %
+b1011011 ,
+b101 '
+b101 +
+b1111 #
+b1111 $
+#30000
+b1111110 "
+b1111110 &
+b1111110 *
+b1111001 !
+b1111001 %
+b1111001 ,
+b0 (
+b0 )
+b11 '
+b11 +
+b11 #
+b11 $
+#40000
+b1101101 "
+b1101101 &
+b1101101 *
+b1111110 !
+b1111110 %
+b1111110 ,
+b10 (
+b10 )
+b0 '
+b0 +
+b10100 #
+b10100 $
+#50000
+b1111001 "
+b1111001 &
+b1111001 *
+b1011011 !
+b1011011 %
+b1011011 ,
+b11 (
+b11 )
+b101 '
+b101 +
+b100011 #
+b100011 $
+#60000
+b1011011 "
+b1011011 &
+b1011011 *
+b1111110 !
+b1111110 %
+b1111110 ,
+b101 (
+b101 )
+b0 '
+b0 +
+b110010 #
+b110010 $
+#70000
+b1011111 "
+b1011111 &
+b1011111 *
+b1111001 !
+b1111001 %
+b1111001 ,
+b110 (
+b110 )
+b11 '
+b11 +
+b111111 #
+b111111 $
+#80000
