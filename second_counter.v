@@ -26,8 +26,8 @@ module second_counter #(
         end
     end
 
-    assign last = (temp_second == 7'd0) ? 1'b1 : 1'b0;
-    assign pre_last = (temp_second == 7'd1) ? 1'b1 : 1'b0;
+    assign last = (temp_second == 0) ? 1'b1 : 1'b0;
+    assign pre_last = (temp_second == 1) ? 1'b1 : 1'b0;
     assign second = temp_second;
 
 endmodule

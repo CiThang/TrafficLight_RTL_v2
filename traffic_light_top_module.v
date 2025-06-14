@@ -7,8 +7,7 @@ module traffic_light_top_module #(
     parameter pSECOND_CNT_VAL      = 99,
     parameter pTIME_GREEN_LIGHT    = 15,
     parameter pTIME_YELLOW_LIGHT   = 3,
-    parameter pTIME_RED_LIGHT      = 18,
-    parameter LIGHT_STATE_WIDTH    = 3         // ✅ Thêm tham số thiếu
+    parameter pTIME_RED_LIGHT      = 18
 )(
     input wire clk,
     input wire en,
@@ -27,6 +26,7 @@ module traffic_light_top_module #(
     parameter pLIGHT_CNT_WIDTH = 5;
     parameter pINIT_WIDTH      = 3;
     parameter pSECOND_CNT_WIDTH = 7;
+    parameter LIGHT_STATE_WIDTH = 3; // Width of light state signals
 
     wire second_cnt_last,
          second_cnt_pre_last;
@@ -39,8 +39,7 @@ module traffic_light_top_module #(
 
     wire [6:0] count;
 
-    // ✅ Gán enable đếm ánh sáng
-    assign light_cnt_en = second_cnt_last;
+    
 
     second_counter #(
         .pMAX_VALUE(pSECOND_CNT_VAL)
@@ -52,6 +51,9 @@ module traffic_light_top_module #(
         .pre_last(second_cnt_pre_last),
         .second(count)
     );
+
+// ✅ Gán enable đếm ánh sáng
+    assign light_cnt_en = second_cnt_last & en;
 
     light_counter #(
         .pTIME_GREEN_LIGHT(pTIME_GREEN_LIGHT),

@@ -10,17 +10,18 @@ module traffic_fsm#(
     output wire [LIGHT_STATE_WIDTH-1:0] light_cnt_init
 );
 
-// Định nghĩa các trạng thái đèn giao thông
+    // Light indices
     parameter pGREEN_LIGHT  = 0;
     parameter pYELLOW_LIGHT = 1;
     parameter pRED_LIGHT    = 2;
 
-    // encode
+    // FSM states
     parameter pIDLE = 2'b00;
     parameter pGREEN = 2'b01;
     parameter pYELLOW = 2'b10;
     parameter pRED = 2'b11;
 
+    // State registers
     reg [1:0] light_current_state, light_next_state;
 
     // Output registers
@@ -36,6 +37,7 @@ module traffic_fsm#(
     assign light = signal_current_light;
     assign light_cnt_init = signal_current_init;
 
+    // State transition
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             light_current_state <= pIDLE;
@@ -52,16 +54,16 @@ module traffic_fsm#(
         end
     end
 
+    // Combinational logic
     always @(*) begin
         light_next_state = pIDLE;
-        signal_next_light = 0; // Đèn không sáng
-        signal_next_init = 0; // Không khởi tạo bộ đếm
+        signal_next_light = 0;
+        signal_next_init = 0;
 
         case (light_current_state)
             pIDLE: begin
                 if (en) begin
                     light_next_state = pGREEN;
-                    // Trạn thái đèn
                     signal_next_light[pGREEN_LIGHT] = 1'b1;
                     signal_next_init[pGREEN_LIGHT] = 1'b1;
                 end
@@ -70,12 +72,10 @@ module traffic_fsm#(
             pGREEN: begin
                 if (last_cnt) begin
                     light_next_state = pYELLOW;
-                    // Trạng thái đèn
                     signal_next_light[pYELLOW_LIGHT] = 1'b1;
                     signal_next_init[pYELLOW_LIGHT] = 1'b1;
                 end else begin
                     light_next_state = pGREEN;
-                    // Trạng thái đèn
                     signal_next_light[pGREEN_LIGHT] = 1'b1;
                     signal_next_init[pGREEN_LIGHT] = 1'b1;
                 end
@@ -84,12 +84,10 @@ module traffic_fsm#(
             pYELLOW: begin
                 if (last_cnt) begin
                     light_next_state = pRED;
-                    // Trạng thái đèn
                     signal_next_light[pRED_LIGHT] = 1'b1;
                     signal_next_init[pRED_LIGHT] = 1'b1;
                 end else begin
                     light_next_state = pYELLOW;
-                    // Trạng thái đèn
                     signal_next_light[pYELLOW_LIGHT] = 1'b1;
                     signal_next_init[pYELLOW_LIGHT] = 1'b1;
                 end
@@ -98,12 +96,10 @@ module traffic_fsm#(
             pRED: begin
                 if (last_cnt) begin
                     light_next_state = pGREEN;
-                    // Trạng thái đèn
                     signal_next_light[pGREEN_LIGHT] = 1'b1;
                     signal_next_init[pGREEN_LIGHT] = 1'b1;
                 end else begin
                     light_next_state = pRED;
-                    // Trạng thái đèn
                     signal_next_light[pRED_LIGHT] = 1'b1;
                     signal_next_init[pRED_LIGHT] = 1'b1;
                 end

@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
 `include "traffic_fsm.v"
+
 module traffic_fsm_tb;
 
   parameter LIGHT_STATE_WIDTH = 3;
@@ -43,38 +44,30 @@ module traffic_fsm_tb;
 
     // Apply reset
     #10 rst_n = 1;
-    #10 rst_n = 0;
-    #10 rst_n = 1;
 
-    // Enable FSM
-    en = 1;
+    // Enable FSM one time after reset
+    #10 en = 1;
 
+    // Keep FSM running with en=1 forever (no toggling)
     // === GREEN phase (IDLE -> GREEN)
-    #20;
+    #30;
     toggle_last_cnt(); // trigger to YELLOW
 
     // === YELLOW phase
-    #30;
+    #40;
     toggle_last_cnt(); // trigger to RED
 
     // === RED phase
-    #30;
+    #50;
     toggle_last_cnt(); // trigger to GREEN again
 
     // === GREEN again
-    #30;
-    toggle_last_cnt();
+    #40;
+    toggle_last_cnt(); // loop continues...
 
     // Wait and finish
     #100;
     $finish;
-  end
-
-  // Monitor signal changes
-  initial begin
-    $display("Time\tclk\trst_n\ten\tlight\tinit");
-    $monitor("%4t\t%b\t%b\t%b\t%b\t%b",
-             $time, clk, rst_n, en, light, light_cnt_init);
   end
 
   // Task: toggle both last flags high for one cycle
@@ -91,10 +84,10 @@ module traffic_fsm_tb;
   // Optional: Human-readable light display
   always @(posedge clk) begin
     case (light)
-      3'b001: $display("🟢 GREEN Light ON");
-      3'b010: $display("🟡 YELLOW Light ON");
-      3'b100: $display("🔴 RED Light ON");
-      default: $display("--- No Light Active ---");
+      3'b001: $display("%t: 🟢 GREEN Light ON", $time);
+      3'b010: $display("%t: 🟡 YELLOW Light ON", $time);
+      3'b100: $display("%t: 🔴 RED Light ON", $time);
+      default: $display("%t: --- No Light Active ---", $time);
     endcase
   end
 

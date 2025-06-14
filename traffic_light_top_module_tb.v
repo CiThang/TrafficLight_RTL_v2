@@ -7,7 +7,7 @@ module traffic_light_top_module_tb;
     parameter pTIME_GREEN_LIGHT  = 15;
     parameter pTIME_YELLOW_LIGHT = 3;
     parameter pTIME_RED_LIGHT    = 18;
-
+    parameter LIGHT_STATE_WIDTH  = 3; // Width of light state signals
     // Testbench signals
     reg clk;
     reg en;
@@ -49,11 +49,6 @@ module traffic_light_top_module_tb;
     );
 
     // Monitor traffic light changes
-    initial begin
-        $display("TIME\tGREEN\tYELLOW\tRED\tSEG_A\tSEG_B");
-        $monitor("%t\t%b\t%b\t%b\t%h\t%h", 
-                 $time, green_light, yellow_light, red_light, seg_a, seg_b);
-    end
 
     // Test sequence
     initial begin
@@ -72,7 +67,7 @@ module traffic_light_top_module_tb;
         en    = 1'b1;
 
         // Run long enough to see full GREEN → YELLOW → RED transitions
-        #(40000 * CLK_PERIOD);  // 40000 x 10ps = 400,000ps (adjust if needed)
+        #(400 * CLK_PERIOD);  // 40000 x 10ps = 400,000ps (adjust if needed)
 
         // End simulation
         $finish;
