@@ -1,14 +1,11 @@
 module segment_display (
-    input      [5:0] count_value,
-    output     [6:0] seg_a,
-    output     [6:0] seg_b
+    input  wire [6:0] count_value,
+    output wire [6:0] seg_a, // hàng chục
+    output wire [6:0] seg_b  // hàng đơn vị
 );
 
-    wire [3:0] digit_a; // hàng chục
-    wire [3:0] digit_b; // hàng đơn vị
-
-    assign digit_a = count_value / 10;
-    assign digit_b = count_value % 10;
+    wire [3:0] digit_a = count_value / 10;
+    wire [3:0] digit_b = count_value % 10;
 
     display dis_a (
         .value(digit_a),
@@ -21,6 +18,7 @@ module segment_display (
     );
 
 endmodule
+
 
 module display (
     input  [3:0] value,
