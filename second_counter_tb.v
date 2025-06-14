@@ -1,4 +1,4 @@
-// Optimized testbench for Second_counter module - Fixed version
+
 `timescale 1ns/1ps
 `include "second_counter.v"
 module second_counter_tb;

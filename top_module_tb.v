@@ -1,13 +1,12 @@
-`timescale 1ps/1ps
-`include "traffic_light_top_module.v"
-module traffic_light_top_module_tb;
+`timescale 1ns/1ps
+`include "top_module.v"
+module top_module_tb;
 
     // Parameters
     parameter pSECOND_CNT_VAL    = 99;
     parameter pTIME_GREEN_LIGHT  = 15;
     parameter pTIME_YELLOW_LIGHT = 3;
     parameter pTIME_RED_LIGHT    = 18;
-    parameter LIGHT_STATE_WIDTH  = 3; // Width of light state signals
     // Testbench signals
     reg clk;
     reg en;
@@ -32,7 +31,7 @@ module traffic_light_top_module_tb;
     end
 
     // Device under test
-    traffic_light_top_module #(
+    top_module #(
         .pSECOND_CNT_VAL(pSECOND_CNT_VAL),
         .pTIME_GREEN_LIGHT(pTIME_GREEN_LIGHT),
         .pTIME_YELLOW_LIGHT(pTIME_YELLOW_LIGHT),
@@ -53,21 +52,19 @@ module traffic_light_top_module_tb;
     // Test sequence
     initial begin
         // Dump waveform to file
-        $dumpfile("traffic_light.vcd");
-        $dumpvars(0, traffic_light_top_module_tb);
+        $dumpfile("top_module.vcd");
+        $dumpvars(0, top_module_tb);
 
         // Initialize signals
         clk   = 1'b0;
         rst_n = 1'b0;
-        en    = 1'b0;
+        en    = 0;
 
         // Apply reset and then release
-        #(5 * CLK_PERIOD);
-        rst_n = 1'b1;
-        en    = 1'b1;
+        #(5 * CLK_PERIOD) rst_n = 1'b1; en = 1;
 
         // Run long enough to see full GREEN → YELLOW → RED transitions
-        #(400 * CLK_PERIOD);  // 40000 x 10ps = 400,000ps (adjust if needed)
+        #(4000 * CLK_PERIOD);  // 40000 x 10ps = 400,000ps (adjust if needed)
 
         // End simulation
         $finish;

@@ -1,7 +1,7 @@
 module clock_divider(
     input wire clk,
     input wire rst_n,
-    output reg clk_1Hz
+    outpu
 );
     reg [23:0] counter;
     always @(posedge clk or negedge rst_n) begin

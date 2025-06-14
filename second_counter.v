@@ -1,4 +1,4 @@
-`timescale 1ns/1ps
+
 module second_counter #(
     parameter pSECOND_CNT_VALUE = 99,
     parameter pMAX_VAL = pSECOND_CNT_VALUE
