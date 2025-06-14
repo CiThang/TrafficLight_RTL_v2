@@ -1,33 +1,43 @@
+`timescale 1ns/1ps
 module second_counter #(
-    parameter pMAX_VALUE = 99
+    parameter pSECOND_CNT_VALUE = 99,
+    parameter pMAX_VAL = pSECOND_CNT_VALUE
 )(
-    input clk,
-    input en,
-    input rst_n,
+    input wire clk,
+    input wire en,
+    input wire rst_n,
     output wire last,
     output wire pre_last,
-    output wire [6:0] second
+    output reg [6:0] count
 );
 
-    reg [6:0] temp_second;
+    reg [6:0] temp_count;
+
+    initial begin
+        temp_count = pMAX_VAL;
+        count = pMAX_VAL;
+    end
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            temp_second <= pMAX_VALUE;
+            temp_count <= pMAX_VAL;
+            count <= pMAX_VAL;
         end 
-        else if(en) begin
-            if (temp_second == 7'd0) begin
-                temp_second <= pMAX_VALUE;
+        else if (en) begin
+            if (temp_count > 0) begin
+                temp_count <= temp_count - 1;
+                count <= temp_count - 1;
             end else begin
-                temp_second <= temp_second - 1;
+                temp_count <= pMAX_VAL;
+                count <= pMAX_VAL;
             end
-        end else begin
-            temp_second <= pMAX_VALUE;
         end
     end
 
-    assign last = (temp_second == 0) ? 1'b1 : 1'b0;
-    assign pre_last = (temp_second == 1) ? 1'b1 : 1'b0;
-    assign second = temp_second;
+
+    assign last = (temp_count == 0) ? 1'b1 : 1'b0;
+    assign pre_last = (temp_count == 1) ? 1'b1 : 1'b0;
 
 endmodule
+
+

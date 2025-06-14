@@ -2,10 +2,10 @@ module traffic_fsm#(
     parameter LIGHT_STATE_WIDTH = 3
 )(
     input wire clk,
-    input wire rst_n,
     input wire en,
-    input wire second_cnt_pre_last,
+    input wire rst_n,
     input wire light_cnt_last,
+    input wire second_cnt_pre_last,
     output wire [LIGHT_STATE_WIDTH-1:0] light,
     output wire [LIGHT_STATE_WIDTH-1:0] light_cnt_init
 );
@@ -32,8 +32,8 @@ module traffic_fsm#(
 
     // Last count signal
     wire last_cnt;
-    assign last_cnt = light_cnt_last & second_cnt_pre_last;
 
+    assign last_cnt = light_cnt_last & second_cnt_pre_last;
     assign light = signal_current_light;
     assign light_cnt_init = signal_current_init;
 
@@ -66,6 +66,11 @@ module traffic_fsm#(
                     light_next_state = pGREEN;
                     signal_next_light[pGREEN_LIGHT] = 1'b1;
                     signal_next_init[pGREEN_LIGHT] = 1'b1;
+                end 
+                else begin
+                    light_next_state = pIDLE;
+                    signal_next_light = 0;
+                    signal_next_init = 0;
                 end
             end
 

@@ -1,5 +1,5 @@
 $date
-	Sat Jun 14 14:11:08 2025
+	Tue Jun 10 01:48:18 2025
 $end
 $version
 	Icarus Verilog
@@ -7,7 +7,7 @@ $end
 $timescale
 	1ps
 $end
-$scope module traffic_fsm_tb $end
+$scope module Light_FSM_tb $end
 $var wire 3 ! light_cnt_init [2:0] $end
 $var wire 3 " light [2:0] $end
 $var parameter 32 # LIGHT_STATE_WIDTH $end
@@ -25,14 +25,14 @@ $var wire 3 + light_cnt_init [2:0] $end
 $var wire 1 & light_cnt_last $end
 $var wire 1 ' rst_n $end
 $var wire 1 ( second_cnt_pre_last $end
-$var parameter 32 , LIGHT_STATE_WIDTH $end
-$var parameter 2 - pGREEN $end
-$var parameter 32 . pGREEN_LIGHT $end
-$var parameter 2 / pIDLE $end
-$var parameter 2 0 pRED $end
-$var parameter 32 1 pRED_LIGHT $end
-$var parameter 2 2 pYELLOW $end
-$var parameter 32 3 pYELLOW_LIGHT $end
+$var parameter 2 , GREEN $end
+$var parameter 2 - IDLE $end
+$var parameter 32 . LIGHT_STATE_WIDTH $end
+$var parameter 2 / RED $end
+$var parameter 2 0 YELLOW $end
+$var parameter 32 1 pGREEN_IDX $end
+$var parameter 32 2 pRED_IDX $end
+$var parameter 32 3 pYELLOW_IDX $end
 $var reg 2 4 light_current_state [1:0] $end
 $var reg 2 5 light_next_state [1:0] $end
 $var reg 3 6 signal_current_init [2:0] $end
@@ -40,7 +40,7 @@ $var reg 3 7 signal_current_light [2:0] $end
 $var reg 3 8 signal_next_init [2:0] $end
 $var reg 3 9 signal_next_light [2:0] $end
 $upscope $end
-$scope task toggle_last_cnt $end
+$scope task display_light_state $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
@@ -48,12 +48,12 @@ $comment Show the parameter values. $end
 $dumpall
 b1 3
 b10 2
-b10 1
-b11 0
-b0 /
-b0 .
-b1 -
-b11 ,
+b0 1
+b10 0
+b11 /
+b11 .
+b0 -
+b1 ,
 b11 #
 $end
 #0
@@ -83,12 +83,18 @@ $end
 #15000
 1$
 #20000
+0$
+0'
+#25000
+1$
+#30000
 b1 8
 b1 9
 b1 5
 0$
 1%
-#25000
+1'
+#35000
 b1 8
 b1 9
 b1 5
@@ -99,10 +105,6 @@ b1 "
 b1 *
 b1 7
 b1 4
-1$
-#30000
-0$
-#35000
 1$
 #40000
 0$
@@ -147,10 +149,6 @@ b10 5
 #85000
 1$
 #90000
-0$
-#95000
-1$
-#100000
 b100 8
 b100 9
 b11 5
@@ -158,7 +156,7 @@ b11 5
 0$
 1(
 1&
-#105000
+#95000
 b1 8
 b1 9
 b1 5
@@ -170,7 +168,7 @@ b100 *
 b100 7
 b11 4
 1$
-#110000
+#100000
 b100 8
 b100 9
 b11 5
@@ -178,6 +176,10 @@ b11 5
 0$
 0(
 0&
+#105000
+1$
+#110000
+0$
 #115000
 1$
 #120000
@@ -185,18 +187,6 @@ b11 5
 #125000
 1$
 #130000
-0$
-#135000
-1$
-#140000
-0$
-#145000
-1$
-#150000
-0$
-#155000
-1$
-#160000
 b1 8
 b1 9
 b1 5
@@ -204,7 +194,7 @@ b1 5
 0$
 1(
 1&
-#165000
+#135000
 b10 8
 b10 9
 b10 5
@@ -216,7 +206,7 @@ b1 *
 b1 7
 b1 4
 1$
-#170000
+#140000
 b1 8
 b1 9
 b1 5
@@ -224,21 +214,17 @@ b1 5
 0$
 0(
 0&
-#175000
+#145000
 1$
-#180000
+#150000
 0$
-#185000
+#155000
 1$
-#190000
+#160000
 0$
-#195000
+#165000
 1$
-#200000
-0$
-#205000
-1$
-#210000
+#170000
 b10 8
 b10 9
 b10 5
@@ -246,7 +232,7 @@ b10 5
 0$
 1(
 1&
-#215000
+#175000
 b100 8
 b100 9
 b11 5
@@ -258,7 +244,7 @@ b10 *
 b10 7
 b10 4
 1$
-#220000
+#180000
 b10 8
 b10 9
 b10 5
@@ -266,6 +252,22 @@ b10 5
 0$
 0(
 0&
+#185000
+1$
+#190000
+0$
+#195000
+1$
+#200000
+0$
+#205000
+1$
+#210000
+0$
+#215000
+1$
+#220000
+0$
 #225000
 1$
 #230000
@@ -289,20 +291,4 @@ b10 5
 #275000
 1$
 #280000
-0$
-#285000
-1$
-#290000
-0$
-#295000
-1$
-#300000
-0$
-#305000
-1$
-#310000
-0$
-#315000
-1$
-#320000
 0$

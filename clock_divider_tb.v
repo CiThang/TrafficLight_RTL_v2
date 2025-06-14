@@ -1,6 +1,5 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 `include "clock_divider.v"
-
 module clock_divider_tb;
     reg clk;
     reg rst_n;
