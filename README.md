@@ -5,11 +5,6 @@ Dự án này hiện thực một **bộ điều khiển đèn giao thông** b�
 ---
 
 ![image](https://github.com/user-attachments/assets/22b67d8a-2496-452f-97d7-29e328cdaad8)
-
-## 📦 Tổng Quan Các Module
-
-Hệ thống gồm 5 module chính như sau:
-
 ---
 
 ## 📄 Mô tả
@@ -25,7 +20,9 @@ Thiết kế được viết bằng Verilog HDL với kiến trúc **modular RTL
 
 ---
 
-## 📦 Danh sách các module
+## 📦 Tổng Quan Các Module
+
+Hệ thống gồm 5 module chính như sau:
 
 ### 1. `Clock Divider - clock_divider.v`
 - **Chức năng**: Chia xung từ 10MHz xuống 1Hz, giúp con người dễ theo dõi hơn.
