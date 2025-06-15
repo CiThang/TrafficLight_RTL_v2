@@ -11,37 +11,71 @@ This project implements a **traffic light controller** in Verilog, simulating a 
 
 The system is composed of four main modules:
 
-### 1. `Clock Divider - clock_divider.v`
-- **Function**: Divides the input 10MHz clock down to 1Hz for human-perceivable timing.
-- **Input**: `clk` (10MHz)
-- **Output**: `clk_1Hz`
-- **Result**
-![image](https://github.com/user-attachments/assets/9c697f09-e145-496e-a534-905a16bb2daa)
-### 2. `State Machine - traffic_fsm_single.v`
-- **Function**: Controls the light states (red, yellow, green) based on a timed sequence.
-- **States and Durations**:
-  - 🔴 Red: 18 seconds
-  - 🟡 Yellow: 3 seconds
-  - 🟢 Green: 15 seconds
-- **Inputs**: `clk_1Hz`, `rst_n`, `en`
-- **Outputs**:
-  - `red_light`
-  - `yellow_light`
-  - `green_light`
-  - `timer_value` (passed to counter)
-- **Result**
-![image](https://github.com/user-attachments/assets/bcb517ee-683f-4660-96a1-426c0e1d0046)
-### 3. `Counter`
-- **Function**: Countdown timer from the `timer_value` received from the state machine.
-- **Input**: `clk_1Hz`, `timer_value`
-- **Output**: `count_value` (0–99)
+# 🚦 Bộ Điều Khiển Đèn Giao Thông - Dự Án Verilog
 
-### 4. `7-Segment Display Controller`
-- **Function**: Converts `count_value` to a 2-digit 7-segment format for display.
-- **Input**: `count_value`
-- **Output**: `display_led[15:0]` (for 2 digits × 7 segments + dot points)
+## 📄 Mô tả
+
+Dự án này hiện thực một **bộ điều khiển đèn giao thông** hoàn chỉnh sử dụng **Verilog HDL**, bao gồm các thành phần: **chia xung**, **máy trạng thái**, **bộ đếm thời gian cho từng pha đèn**, và **hiển thị LED 7 đoạn**. Thiết kế sử dụng phương pháp mô-đun (modular RTL) để dễ mở rộng và bảo trì.
 
 ---
+
+## 📦 Danh sách các module
+
+### 1. `Clock Divider - clock_divider.v`
+- **Chức năng**: Chia xung từ 10MHz xuống 1Hz để sử dụng làm nhịp chính dễ quan sát.
+- **Ngõ vào**: `clk` (10MHz)
+- **Ngõ ra**: `clk_1Hz`
+- **Kết quả**: Sử dụng làm xung đồng hồ hệ thống cho các module khác.
+
+---
+
+### 2. `traffic_fsm.v`
+- **Chức năng**: Máy trạng thái hữu hạn điều khiển thứ tự các pha đèn giao thông.
+- **Các trạng thái**: `IDLE` → `GREEN` → `YELLOW` → `RED` (lặp lại).
+- **Ngõ ra**:
+  - `light[2:0]`: Đèn đang bật (bit 0: Xanh, bit 1: Vàng, bit 2: Đỏ).
+  - `light_cnt_init[2:0]`: Tín hiệu khởi tạo lại bộ đếm thời gian cho đèn tương ứng.
+
+---
+
+### 3. `light_counter.v`
+- **Chức năng**: Đếm ngược thời gian cho từng pha đèn.
+- **Tham số có thể cấu hình**:
+  - `pGREEN_INIT_VAL`: Thời gian đèn xanh.
+  - `pYELLOW_INIT_VAL`: Thời gian đèn vàng.
+  - `pRED_INIT_VAL`: Thời gian đèn đỏ.
+- **Ngõ vào**: `init[2:0]` — kích hoạt khởi tạo lại bộ đếm.
+- **Ngõ ra**: `cnt_out`, `last` (tín hiệu kết thúc đếm)
+
+---
+
+### 4. `second_counter.v`
+- **Chức năng**: Đếm ngược từ 99 về 0 (chu kỳ 1 giây).
+- **Ngõ ra**:
+  - `last`: Bằng 1 khi đếm về 0.
+  - `pre_last`: Bằng 1 khi đếm về 1.
+  - `count[6:0]`: Giá trị hiện tại của bộ đếm.
+
+---
+
+### 5. `7-Segment Display Controller`
+- **Chức năng**: Chuyển đổi `count_value` thành định dạng LED 7 đoạn để hiển thị 2 chữ số.
+- **Ngõ vào**: `count_value`
+- **Ngõ ra**: `display_led[15:0]` (2 chữ số × 7 đoạn + chấm)
+
+---
+
+## 🧪 Testbench
+
+Các testbench được cung cấp để mô phỏng và kiểm thử từng module:
+
+- ✅ `traffic_fsm_tb.v`: Kiểm tra hoạt động và chuyển trạng thái của FSM (`light`, `light_cnt_init`).
+- ✅ `light_counter_tb.v`: Kiểm tra bộ đếm thời gian của từng pha đèn.
+- ✅ `second_counter_tb.v`: Kiểm tra đếm từ 99 về 0 và các tín hiệu `last`, `pre_last`.
+
+---
+
+
 
 ## 📐 Top Module Port Description
 
