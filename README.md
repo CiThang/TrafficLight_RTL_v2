@@ -131,9 +131,10 @@ Các tệp testbench có sẵn để mô phỏng hoạt động của từng mod
 
 ---
 
-## 📷 Sơ Đồ Khối
+## 📷 Sơ Đồ Khối và kết quả
 
 ![image](https://github.com/user-attachments/assets/973ac5c3-eb01-422d-bff7-e7d481a996d0)
+                                Sơ đồ khối
 
 ---
 
