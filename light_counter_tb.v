@@ -2,110 +2,102 @@
 `include "light_counter.v"
 module light_counter_tb;
 
-  // Parameters
-  parameter pTIME_GREEN_LIGHT  = 15;
-  parameter pTIME_YELLOW_LIGHT = 3;
-  parameter pTIME_RED_LIGHT    = 18;
-  parameter pCNT_WIDTH = 5;
-  parameter pINIT_WIDTH = 3;
+    // Parameters
+    parameter pGREEN_INIT_VAL  = 14;
+    parameter pYELLOW_INIT_VAL = 2;
+    parameter pRED_INIT_VAL    = 17;
+    parameter pCNT_WIDTH       = 5; // log2(pRED_INIT_VAL+1)
+    parameter pINIT_WIDTH      = 3;
+    parameter CLK_PERIOD       = 10;
 
-  // Signals
-  reg clk;
-  reg en;
-  reg rst_n;
-  reg [pINIT_WIDTH-1:0] init;
-  wire last;
-  wire [pCNT_WIDTH-1:0] cnt_out;
+    // Signals
+    reg clk;
+    reg rst_n;
+    reg en;
+    reg [pINIT_WIDTH-1:0] init;
+    wire last;
+    wire [pCNT_WIDTH-1:0] cnt_out;
 
-  // Instantiate the DUT
-  light_counter #(
-    .pTIME_GREEN_LIGHT(pTIME_GREEN_LIGHT),
-    .pTIME_YELLOW_LIGHT(pTIME_YELLOW_LIGHT),
-    .pTIME_RED_LIGHT(pTIME_RED_LIGHT),
-    .pCNT_WIDTH(pCNT_WIDTH),
-    .pINIT_WIDTH(pINIT_WIDTH)
-  ) dut (
-    .clk(clk),
-    .en(en),
-    .rst_n(rst_n),
-    .init(init),
-    .last(last),
-    .cnt_out(cnt_out)
-  );
+    // Instantiate DUT
+    light_counter #(
+        .pGREEN_INIT_VAL(pGREEN_INIT_VAL),
+        .pYELLOW_INIT_VAL(pYELLOW_INIT_VAL),
+        .pRED_INIT_VAL(pRED_INIT_VAL),
+        .pCNT_WIDTH(pCNT_WIDTH),
+        .pINIT_WIDTH(pINIT_WIDTH)
+    ) uut (
+        .clk(clk),
+        .en(en),
+        .rst_n(rst_n),
+        .init(init),
+        .last(last),
+        .cnt_out(cnt_out)
+    );
 
-  // Clock generation
-  always #2 clk = ~clk;
+    // Clock generator
+    always #(CLK_PERIOD/2) clk = ~clk;
 
-  // Initial block
-  initial begin
-    $dumpfile("light_counter_tb.vcd");
-    $dumpvars(0, light_counter_tb);
-    Start_Simulation;
-    RESET;
-    TEST_CASE;
-  end
+    // VCD
+    initial begin
+        $dumpfile("light_counter_tb.vcd");
+        $dumpvars(0, light_counter_tb);
+    end
 
-  // === Tasks ===
-  task Start_Simulation; begin
-    $display("-----------------------------------------------------");
-    $display("------------ LIGHT COUNTER SIMULATION ---------------");
-    $display("-----------------------------------------------------");
-  end endtask
+    // Test procedure
+    initial begin
+        // Initial values
+        clk = 0;
+        rst_n = 0;
+        en = 0;
+        init = 3'b000;
 
-  task RESET; begin
-    clk = 0;
-    rst_n = 0;
-    en = 0;
-    init = 3'b000;
-    #5;
-    rst_n = 1;
-  end endtask
+        // Reset
+        #20;
+        rst_n = 1;
 
-  task TEST_CASE; begin
-    $monitor("Time=%4t | clk=%b | rst_n=%b | en=%b | init=%3b | last=%b | cnt_out=%2d", 
-              $time, clk, rst_n, en, init, last, cnt_out);
+        // Start with GREEN
+        #10;
+        init = 3'b001; // GREEN
+        #10;
+        init = 3'b000;
+        en = 1;
 
-    // RED Light phase
-    en = 1;
-    init = 3'b100; // RED
-    #5  init = 3'b000; // clear init
-    wait(last); #4;
+        // Wait until GREEN expires
+        wait (last);
+        #10;
+        en = 0;
 
-    // YELLOW Light phase
-    init = 3'b010;
-    #5  init = 3'b000;
-    wait(last); #4;
+        // Set YELLOW
+        init = 3'b010;
+        #10;
+        init = 3'b000;
+        en = 1;
 
-    // GREEN Light phase
-    init = 3'b001;
-    #5  init = 3'b000;
-    wait(last); #4;
+        // Wait until YELLOW expires
+        wait (last);
+        #10;
+        en = 0;
 
-    // Repeat again (optional)
-    init = 3'b100;
-    #5  init = 3'b000;
-    wait(last); #4;
+        // Set RED
+        init = 3'b100;
+        #10;
+        init = 3'b000;
+        en = 1;
 
-    ENDSIMULATION;
-  end endtask
+        // Wait until RED expires
+        wait (last);
+        #10;
+        en = 0;
 
-  task ENDSIMULATION; begin
-    $display("-------------- SIMULATION FINISHED ------------------");
-    $finish;
-  end endtask
+        // Back to GREEN
+        init = 3'b001;
+        #10;
+        init = 3'b000;
+        en = 1;
 
-  task display_State; begin
-    case (init)
-      3'b100: $display("=== RED LIGHT ===");
-      3'b010: $display("=== YELLOW LIGHT ===");
-      3'b001: $display("=== GREEN LIGHT ===");
-      default: $display("--- Counting ---");
-    endcase
-  end endtask
-
-  // Show current state at every positive edge
-  always @(posedge clk) begin
-    display_State;
-  end
+        // Run for a bit then finish
+        #(20 * CLK_PERIOD);
+        $finish;
+    end
 
 endmodule

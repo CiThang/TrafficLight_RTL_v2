@@ -1,4 +1,5 @@
-module traffic_fsm#(
+// điều khiển trạng thái
+module traffic_fsm #(
     parameter LIGHT_STATE_WIDTH = 3
 )(
     input wire clk,
@@ -9,107 +10,100 @@ module traffic_fsm#(
     output wire [LIGHT_STATE_WIDTH-1:0] light,
     output wire [LIGHT_STATE_WIDTH-1:0] light_cnt_init
 );
-
-    // Light indices
-    parameter pGREEN_LIGHT  = 0;
-    parameter pYELLOW_LIGHT = 1;
-    parameter pRED_LIGHT    = 2;
-
-    // FSM states
-    parameter pIDLE = 2'b00;
-    parameter pGREEN = 2'b01;
-    parameter pYELLOW = 2'b10;
-    parameter pRED = 2'b11;
-
-    // State registers
+    
+//. Định nghĩa các tham số đèn
+    parameter pGREEN_IDX = 0;
+    parameter pYELLOW_IDX = 1;
+    parameter pRED_IDX = 2;
+    
+    // Trạng thái của đèn
+    parameter [1:0] IDLE = 2'b00;
+    parameter [1:0] GREEN = 2'b01;
+    parameter [1:0] YELLOW = 2'b10;
+    parameter [1:0] RED = 2'b11;
+    
+   
     reg [1:0] light_current_state, light_next_state;
-
-    // Output registers
-    reg [LIGHT_STATE_WIDTH-1:0] signal_current_light;
-    reg [LIGHT_STATE_WIDTH-1:0] signal_current_init;
-    reg [LIGHT_STATE_WIDTH-1:0] signal_next_light;
-    reg [LIGHT_STATE_WIDTH-1:0] signal_next_init;
-
-    // Last count signal
+    reg [LIGHT_STATE_WIDTH-1:0] signal_light;
+    reg [LIGHT_STATE_WIDTH-1:0] signal_light_cnt_init;
+    
+    
     wire last_cnt;
-
     assign last_cnt = light_cnt_last & second_cnt_pre_last;
-    assign light = signal_current_light;
-    assign light_cnt_init = signal_current_init;
-
-    // State transition
+    
+    // Trạng thái khi reset, en, và kích hoạt
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            light_current_state <= pIDLE;
-            signal_current_light <= 0;
-            signal_current_init <= 0;
-        end else if (en) begin
+            light_current_state <= IDLE;
+        end
+        else if (en) begin
             light_current_state <= light_next_state;
-            signal_current_light <= signal_next_light;
-            signal_current_init <= signal_next_init;
-        end else begin
-            light_current_state <= pIDLE;
-            signal_current_light <= 0;
-            signal_current_init <= 0;
+        end
+        else begin
+            light_current_state <= IDLE;
         end
     end
-
-    // Combinational logic
+    
+    
     always @(*) begin
-        light_next_state = pIDLE;
-        signal_next_light = 0;
-        signal_next_init = 0;
-
+        light_next_state = IDLE;
+        signal_light = 3'b000;
+        signal_light_cnt_init = 3'b000;
+        
         case (light_current_state)
-            pIDLE: begin
+            // Trạng thái IDLE: đèn tắt
+            IDLE: begin
                 if (en) begin
-                    light_next_state = pGREEN;
-                    signal_next_light[pGREEN_LIGHT] = 1'b1;
-                    signal_next_init[pGREEN_LIGHT] = 1'b1;
-                end 
+                    light_next_state = GREEN;
+                    signal_light[pGREEN_IDX] = 1'b1;
+                end
                 else begin
-                    light_next_state = pIDLE;
-                    signal_next_light = 0;
-                    signal_next_init = 0;
+                    light_next_state = IDLE;
+                    signal_light = 3'b000;
+                    signal_light_cnt_init = 3'b000;
                 end
             end
-
-            pGREEN: begin
+            
+            GREEN: begin
                 if (last_cnt) begin
-                    light_next_state = pYELLOW;
-                    signal_next_light[pYELLOW_LIGHT] = 1'b1;
-                    signal_next_init[pYELLOW_LIGHT] = 1'b1;
-                end else begin
-                    light_next_state = pGREEN;
-                    signal_next_light[pGREEN_LIGHT] = 1'b1;
-                    signal_next_init[pGREEN_LIGHT] = 1'b1;
+                    light_next_state = YELLOW;
+                    signal_light[pYELLOW_IDX] = 1'b1;
+                    signal_light_cnt_init[pYELLOW_IDX] = 1'b1;
+                end
+                else begin
+                    light_next_state = GREEN;
+                    signal_light[pGREEN_IDX] = 1'b1;
                 end
             end
-
-            pYELLOW: begin
+            
+            YELLOW: begin
                 if (last_cnt) begin
-                    light_next_state = pRED;
-                    signal_next_light[pRED_LIGHT] = 1'b1;
-                    signal_next_init[pRED_LIGHT] = 1'b1;
-                end else begin
-                    light_next_state = pYELLOW;
-                    signal_next_light[pYELLOW_LIGHT] = 1'b1;
-                    signal_next_init[pYELLOW_LIGHT] = 1'b1;
+                    light_next_state = RED;
+                    signal_light[pRED_IDX] = 1'b1;
+                    signal_light_cnt_init[pRED_IDX] = 1'b1;
+                end
+                else begin
+                    light_next_state = YELLOW;
+                    signal_light[pYELLOW_IDX] = 1'b1;
                 end
             end
-
-            pRED: begin
+            
+            RED: begin
                 if (last_cnt) begin
-                    light_next_state = pGREEN;
-                    signal_next_light[pGREEN_LIGHT] = 1'b1;
-                    signal_next_init[pGREEN_LIGHT] = 1'b1;
-                end else begin
-                    light_next_state = pRED;
-                    signal_next_light[pRED_LIGHT] = 1'b1;
-                    signal_next_init[pRED_LIGHT] = 1'b1;
+                    light_next_state = GREEN;
+                    signal_light[pGREEN_IDX] = 1'b1;
+                    signal_light_cnt_init[pGREEN_IDX] = 1'b1;
+                end
+                else begin
+                    light_next_state = RED;
+                    signal_light[pRED_IDX] = 1'b1;
                 end
             end
         endcase
     end
+    
+    // Output assignments
+    assign light = signal_light;
+    assign light_cnt_init = signal_light_cnt_init;
 
 endmodule

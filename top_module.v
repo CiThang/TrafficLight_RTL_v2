@@ -1,7 +1,8 @@
-`include " second_counter.v"
-`include " light_counter.v"
-`include " traffic_fsm.v"
-`include " segment_display.v"
+// Traffic Light Controller Verilog Implementation
+// Based on SystemVerilog version
+`include "second_counter.v"
+`include "light_counter.v"
+`include "traffic_fsm.v"
 module top_module #(
     parameter pSECOND_CNT_VALUE = 99,
     parameter pGREEN_INIT_VAL = 14,
@@ -14,8 +15,7 @@ module top_module #(
     output wire green_light,
     output wire yellow_light,
     output wire red_light,
-    output wire [6:0] seg_a,
-    output wire [6:0] seg_b,    
+    output wire [6:0] count // assuming 7 bits are enough for 0-99
 );
 
     // Parameters
@@ -40,13 +40,9 @@ module top_module #(
     wire light_cnt_en;
     wire [LIGHT_STATE_WIDTH-1:0] light;
     
-    wire [pLED_WIDTH-1:0] display_led_dozens;
-    wire [pLED_WIDTH-1:0] display_led_unit;
-    
     // Second counter module
     second_counter #(
-        .pSECOND_CNT_VALUE(pSECOND_CNT_VALUE),
-        .pMAX_VAL(pSECOND_CNT_VALUE),
+        .pMAX_VAL(pSECOND_CNT_VALUE)
     ) second_cnt (
         .clk(clk),
         .en(en),
@@ -61,9 +57,9 @@ module top_module #(
     
     // Light counter module
     light_counter #(
-        .pTIME_GREEN_LIGHT(pGREEN_INIT_VAL),
-        .pTIME_YELLOW_LIGHT(pYELLOW_INIT_VAL),
-        .pTIME_RED_LIGHT(pRED_INIT_VAL),
+        .pGREEN_INIT_VAL(pGREEN_INIT_VAL),
+        .pYELLOW_INIT_VAL(pYELLOW_INIT_VAL),
+        .pRED_INIT_VAL(pRED_INIT_VAL),
         .pCNT_WIDTH(pLIGHT_CNT_WIDTH),
         .pINIT_WIDTH(pINIT_WIDTH)
     ) dut1 (
@@ -74,6 +70,8 @@ module top_module #(
         .last(light_cnt_last),
         .cnt_out(light_cnt_out)
     );
+    
+    
     
     // Light FSM module
     traffic_fsm #(
@@ -86,13 +84,6 @@ module top_module #(
         .second_cnt_pre_last(second_cnt_pre_last),
         .light(light),
         .light_cnt_init(light_cnt_init)
-    );
-
-    // Display module
-    segment_display dut4 (
-        .count_value(count),
-        .seg_a(seg_a),
-        .seg_b(seg_b)
     );
     
     // Light outputs

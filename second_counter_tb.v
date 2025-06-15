@@ -1,23 +1,21 @@
-
 `timescale 1ns/1ps
 `include "second_counter.v"
 module second_counter_tb;
-    // Define parameters
-    parameter pSECOND_CNT_VALUE = 99;
-    parameter pMAX_VAL = pSECOND_CNT_VALUE;
-    parameter CLK_PERIOD = 4; // Clock period in ns
-    
+
+    // Parameters
+    parameter CLK_PERIOD = 10; // 100 MHz
+    parameter pMAX_VAL = 99;
+
     // Testbench signals
-    reg clk;  
-    reg en;
+    reg clk;
     reg rst_n;
+    reg en;
     wire last;
     wire pre_last;
     wire [6:0] count;
-  
-    // Instantiate the Unit Under Test (UUT)
+
+    // DUT instance
     second_counter #(
-        .pSECOND_CNT_VALUE(pSECOND_CNT_VALUE),
         .pMAX_VAL(pMAX_VAL)
     ) uut (
         .clk(clk),
@@ -27,36 +25,38 @@ module second_counter_tb;
         .pre_last(pre_last),
         .count(count)
     );
-    
-    // Initialize all signals to avoid X values
-    initial begin
-        clk = 0;
-        en = 0;
-        rst_n = 1;
-    end
-    
+
     // Clock generation
     always #(CLK_PERIOD/2) clk = ~clk;
-    
-    // Dump waveform to file
+
+    // VCD dump
     initial begin
-        $dumpfile("second_counter_tb.vcd");
+        $dumpfile("second_counter.vcd");
         $dumpvars(0, second_counter_tb);
     end
-  
+
     // Test sequence
     initial begin
-        // Start with reset to ensure deterministic state
-        #(CLK_PERIOD*2) rst_n = 0;
-        #(CLK_PERIOD*2) rst_n = 1;
+        // Khởi tạo
+        clk = 0;
+        rst_n = 0;
+        en = 0;
         
-        // Enable counter and monitor - use %d for decimal display of count
-        #(CLK_PERIOD) en = 1;
-        // $monitor("Time=%0t, clk=%b, rst_n=%b, en=%b, count=%d, last=%b, pre_last=%b", 
-        //          $time, clk, rst_n, en, count, last, pre_last);
-        
-        // Run for a full counter cycle plus a bit more to see wrap-around
-        #(CLK_PERIOD * (pMAX_VAL + 10)) $finish;
+        // Reset thấp → cao
+        #10;
+        rst_n = 1;
+        en = 1;
+
+        // Đếm đủ 2 chu kỳ từ 99 → 0 → 99
+        #(pMAX_VAL * CLK_PERIOD + 20);  // chu kỳ đầu
+        #(pMAX_VAL * CLK_PERIOD + 20);  // chu kỳ thứ hai
+
+        // Tắt enable
+        en = 0;
+        #50;
+
+        // Kết thúc mô phỏng
+        $finish;
     end
-  
+
 endmodule
