@@ -66,7 +66,7 @@ Thiết kế được viết bằng Verilog HDL với kiến trúc **modular RTL
   - `last`: Bằng 1 khi đếm = 0.
   - `pre_last`: Bằng 1 khi đếm = 1.
   - `count[6:0]`: Giá trị hiện tại.
--**Mô phỏng**
+- **Mô phỏng**
 ![image](https://github.com/user-attachments/assets/2161a889-f0ed-4b8a-832b-45d635d678b4)
 
 ---
