@@ -3,6 +3,7 @@
 `include "second_counter.v"
 `include "light_counter.v"
 `include "traffic_fsm.v"
+`include "segment_display.v"
 module top_module #(
     parameter pSECOND_CNT_VALUE = 99,
     parameter pGREEN_INIT_VAL = 14,
@@ -15,9 +16,11 @@ module top_module #(
     output wire green_light,
     output wire yellow_light,
     output wire red_light,
-    output wire [6:0] count // assuming 7 bits are enough for 0-99
+    output wire [6:0] seg_a,
+    output wire [6:0] seg_b 
 );
 
+    wire [6:0] count; 
     // Parameters
     parameter pNUMBER_WIDTH = 5;
     parameter pLED_WIDTH = 8;
@@ -86,6 +89,13 @@ module top_module #(
         .light_cnt_init(light_cnt_init)
     );
     
+    // Segment display module
+    segment_display seg_disp (
+        .count(count),
+        .seg_a(seg_a),
+        .seg_b(seg_b)
+    );
+
     // Light outputs
     assign green_light = light[pGREEN_IDX];
     assign yellow_light = light[pYELLOW_IDX];
